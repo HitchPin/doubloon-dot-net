@@ -25,7 +25,7 @@ namespace Doubloon.Currencies
                 throw new ImplicitRoundingForbiddenException();
             }
 
-            return decimalCount;
+            return d;
         }
 
         /// <inheritdoc cref="ICurrency.AsSafeDecimal(string)"/>
@@ -35,7 +35,7 @@ namespace Doubloon.Currencies
             return AsSafeDecimal(d);
         }
 
-        public decimal Quantize(decimal d) => Math.Round(d, MidpointRounding.ToEven);
+        public decimal Quantize(decimal d) => Math.Round(d, NumberOfDecimalPlaces, MidpointRounding.ToEven);
         
         public abstract string ToDisplayFormat(decimal d);
     }

@@ -2,3 +2,7 @@
 **/obj
 .idea
 **/.DS_Store
+test/coverage.xml
+test/coveragereport
+.env
+Doubloon.sln.DotSettings.user

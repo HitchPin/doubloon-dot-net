@@ -2,20 +2,31 @@
 
     <PropertyGroup>
         <PackageId>Doubloon</PackageId>
-        <Version>0.1.0-beta</Version>
+        <Version>0.1.1-beta</Version>
         <Authors>Johnathan Davis</Authors>
         <Company>HitchPin</Company>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>12</LangVersion>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/HitchPin/doubloon-dot-net</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="System.Runtime" Version="4.3.1" />
       <PackageReference Include="System.Text.Json" Version="10.0.0-preview.2.25163.2" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Include="../Common/RegisteredCurrencyAttribute.cs" Link="Common/RegisteredCurrencyAttribute.cs" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="docs\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 </Project>

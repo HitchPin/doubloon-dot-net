@@ -13,7 +13,10 @@ namespace Doubloon
         
         private readonly T currency;
         private readonly decimal value;
-        public Doubloon(decimal d) : this(TypeCache.GetInstance<T>(), TypeCache.GetInstance<T>().AsSafeDecimal(d))
+        public Doubloon(decimal d) : this(CurrencyRegistry.RegisterOrGetRegistrant<T>(), CurrencyRegistry.RegisterOrGetRegistrant<T>().AsSafeDecimal(d))
+        {
+        }
+        public Doubloon(string d) : this(CurrencyRegistry.RegisterOrGetRegistrant<T>(), CurrencyRegistry.RegisterOrGetRegistrant<T>().AsSafeDecimal(d))
         {
         }
         private Doubloon(T instance, decimal d)
@@ -100,7 +103,7 @@ namespace Doubloon
             string canonBase64;
             using (var ms = new MemoryStream())
             {
-                var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false, NewLine = ""});
+                var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false});
                 writer.WriteStartArray();
                 writer.WriteStringValue(this.AsScalarString());
                 writer.WriteStringValue(this.currency.Name);
@@ -113,10 +116,10 @@ namespace Doubloon
 
             using (var ms = new MemoryStream())
             {
-                var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false, NewLine = ""});
+                var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false });
                 writer.WriteStartObject();
                 writer.WriteString("canonical", canonBase64);
-                writer.WriteString("formatted", this.currency.ToDisplayFormat(this.value));
+                writer.WriteString("display_only", this.currency.ToDisplayFormat(this.value));
                 writer.WriteEndObject();
                 writer.Flush();
                 writer.Dispose();
@@ -130,7 +133,7 @@ namespace Doubloon
             var canon = ToCanonicalString();
             var obj = new JsonObject();
             obj.Add("canonical", canon);
-            obj.Add("formatted", this.currency.ToDisplayFormat(this.value));
+            obj.Add("display_only", this.currency.ToDisplayFormat(this.value));
             return obj;
         }
 
@@ -138,7 +141,7 @@ namespace Doubloon
         {
             using (var ms = new MemoryStream())
             {
-                var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false, NewLine = ""});
+                var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false});
                 writer.WriteStartArray();
                 writer.WriteStringValue(this.AsScalarString());
                 writer.WriteStringValue(this.currency.Name);
@@ -150,46 +153,64 @@ namespace Doubloon
             }
         }
 
-        public static Doubloon<JT> Parse<JT>(string json) where JT : ICurrency, new()
+        private static Doubloon<T> FromCanonicalString(string canon)
         {
-            var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
-            if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject)
+            var b64 = canon;
+            var bytes = Convert.FromBase64String(b64);
+            ReadOnlySpan<byte> span = bytes.AsSpan();
+            var r2 = new Utf8JsonReader(span, new JsonReaderOptions() { AllowMultipleValues = false, CommentHandling = JsonCommentHandling.Disallow});
+            r2.Read();
+            if (r2.TokenType != JsonTokenType.StartArray) throw new JsonException("Invalid Doubloon JSON. Expected array.");
+            r2.Read();
+            string value = r2.GetString();
+            r2.Read();
+            string currencyName = r2.GetString();
+            r2.Read();
+            if (r2.TokenType != JsonTokenType.EndArray)
             {
-                throw new JsonException("Invalid Doubloon JSON. Expected object.");
+                throw new JsonException("Expected only two strings.");
             }
 
-            while (reader.Read() && reader.TokenType == JsonTokenType.PropertyName)
+            var jt = new T();
+            if (jt.Name != currencyName)
             {
-                string prop = reader.GetString();
-                if (prop == "canonical")
+                throw new ArgumentException($"JSON string '{jt.Name}' does not match currency '{currencyName}'.");
+            }
+
+            return new Doubloon<T>(decimal.Parse(value));
+        }
+
+        public static Doubloon<T> Parse(string json)
+        {
+            if (json.TrimStart().StartsWith("{"))
+            {
+                var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
+                reader.Read();
+                if (reader.TokenType == JsonTokenType.StartObject)
                 {
                     reader.Read();
-                    var b64 = reader.GetString();
-                    var bytes = Convert.FromBase64String(b64);
-                    ReadOnlySpan<byte> span = bytes.AsSpan();
-                    var r2 = new Utf8JsonReader(span, new JsonReaderOptions() { AllowMultipleValues = false, CommentHandling = JsonCommentHandling.Disallow});
-                    r2.Read();
-                    if (r2.TokenType != JsonTokenType.StartArray) throw new JsonException("Invalid Doubloon JSON. Expected array.");
-                    reader.Read();
-                    string currencyName = reader.GetString();
-                    reader.Read();
-                    string value = reader.GetString();
-                    reader.Read();
-                    if (r2.TokenType != JsonTokenType.EndArray)
+                    while (reader.TokenType != JsonTokenType.EndObject)
                     {
-                        throw new JsonException("Expected only two strings.");
+                        string propName = reader.GetString();
+                        reader.Read();
+                        if (propName == "canonical")
+                        {
+                            return FromCanonicalString(reader.GetString());
+                        }
+
+                        reader.Read();
                     }
 
-                    var jt = new JT();
-                    if (jt.Name != currencyName)
-                    {
-                        throw new ArgumentException($"JSON string '{jt.Name}' does not match currency '{currencyName}'.");
-                    }
-
-                    return new Doubloon<JT>(decimal.Parse(value));
                 }
+                
+                throw new ArgumentException("Input was an object but no matching doubloon found.");
             }
-            throw new JsonException("Invalid Doubloon JSON.");
+            else if (char.IsLetterOrDigit(json[0]))
+            {
+                return FromCanonicalString(json);
+            }
+
+            throw new ArgumentException("Unknown input format.");
         }
     }
 }

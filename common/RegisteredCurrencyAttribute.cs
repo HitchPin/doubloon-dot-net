@@ -5,7 +5,7 @@ namespace Doubloon
     /// <summary>
     /// Step attribute for a workflow.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 #if BUILDING_SOURCE_GENERATOR
     internal
 #else

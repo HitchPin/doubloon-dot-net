@@ -11,13 +11,5 @@ namespace Doubloon
         public ImplicitRoundingForbiddenException() : base(DefaultMessage)
         {
         }
-
-        public ImplicitRoundingForbiddenException(string message) : base(message)
-        {
-        }
-
-        public ImplicitRoundingForbiddenException(string message, Exception inner) : base(message, inner)
-        {
-        }
     }
 }

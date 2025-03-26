@@ -10,12 +10,33 @@
         <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="System.Runtime" Version="4.3.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
+        <PackageReference Include="ReportGenerator" Version="5.4.5" />
         <PackageReference Include="xunit.v3" Version="1.1.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Doubloon\Doubloon.csproj" />
+      <ProjectReference Include="..\src\Doubloon.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="coveragereport\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="coveragereport\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="coveragereport\**" />
+      <None Remove="coverage.xml" />
+    </ItemGroup>
+
+    <Target Name="Coverage" AfterTargets="Test">
+        <ItemGroup>
+            <CoverageFiles Include="coverage.xml" />
+        </ItemGroup>
+        <ReportGenerator ProjectDirectory="$(MSBuildProjectDirectory)" ReportFiles="@(CoverageFiles)" TargetDirectory="report" ReportTypes="Html" />
+    </Target>
 </Project>
