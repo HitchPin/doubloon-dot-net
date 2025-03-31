@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="../Common/RegisteredCurrencyAttribute.cs" Link="Common/RegisteredCurrencyAttribute.cs" />
+      <Compile Include="..\Common\RegisteredCurrencyAttribute.cs" Link="Common\RegisteredCurrencyAttribute.cs" />
     </ItemGroup>
     
     <ItemGroup>
