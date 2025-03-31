@@ -24,10 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\Common\RegisteredCurrencyAttribute.cs" Link="Common\RegisteredCurrencyAttribute.cs" />
-    </ItemGroup>
-    
-    <ItemGroup>
         <None Include="docs\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 </Project>
