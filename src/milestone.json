@@ -1,0 +1,495 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Milestone Service",
+    "description": "",
+    "version": "1.0.0",
+    "summary": "Provides the milestone criteria arbitration and holding and settling of funds for the lifetime of the invoice."
+  },
+  "servers": [
+    {
+      "url": "https://localhost:5099"
+    }
+  ],
+  "paths": {
+    "/actions/{actionId}": {
+      "put": {
+        "tags": [
+          "ActionApis"
+        ],
+        "summary": "Invoke an action. Backend-facing API.",
+        "description": "",
+        "operationId": "InvokeAction",
+        "parameters": [
+          {
+            "name": "actionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvokeActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "put": {
+        "tags": [
+          "CreateInvoice"
+        ],
+        "summary": "Create a new invoice using the milestone model.",
+        "description": "",
+        "operationId": "CreateMilestoneInvoice",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/invoices/actions": {
+      "post": {
+        "tags": [
+          "DetermineEligibleActions"
+        ],
+        "summary": "List actions available at a certain point in the invoice.",
+        "description": "",
+        "operationId": "DetermineEligibleActions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvoiceMilestonePointer"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActionSpecification"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actions/requestPayment": {
+      "post": {
+        "operationId": "InvokeAction_RequestPayment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": [
+                  "null",
+                  "object"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "allowedPaymentMethods": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "Card",
+                        "ACH",
+                        "Wire",
+                        "ApplePay"
+                      ]
+                    }
+                  },
+                  "lineItems": {
+                    "type": "array",
+                    "items": {
+                      "type": [
+                        "null",
+                        "object"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "integer"
+                        },
+                        "unitCost": {
+                          "unrecognizedKeywords": {
+                            "allowedCurrencies": [
+                              "USD"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "discount": {
+                    "unrecognizedKeywords": {
+                      "allowedCurrencies": [
+                        "USD"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": { }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActionSpecification": {
+        "required": [
+          "id",
+          "name",
+          "description",
+          "usages",
+          "criteria",
+          "inputSchema",
+          "outputSchema"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "usages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionUsage"
+            }
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EligibilityCriteria"
+            }
+          },
+          "inputSchema": {
+            "$ref": "#/components/schemas/JsonObject"
+          },
+          "outputSchema": {
+            "$ref": "#/components/schemas/JsonObject"
+          }
+        }
+      },
+      "ActionUsage": {
+        "enum": [
+          "Initial",
+          "Cleanup",
+          "Abort",
+          "Before",
+          "After"
+        ]
+      },
+      "Criteria": {
+        "required": [
+          "triggeringEvent",
+          "evaluationExpression"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "triggeringEvent": {
+            "type": "string"
+          },
+          "evaluationExpression": {
+            "type": "string"
+          }
+        }
+      },
+      "EligibilityCriteria": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "expression": {
+            "type": "string"
+          }
+        }
+      },
+      "InProgressActionInvocation": { },
+      "InProgressMilestoneDefinition": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "before": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/InProgressActionInvocation"
+            }
+          },
+          "criteria": {
+            "$ref": "#/components/schemas/Criteria"
+          },
+          "after": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/InProgressActionInvocation"
+            }
+          }
+        }
+      },
+      "InvoiceMilestonePointer": {
+        "required": [
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string"
+          },
+          "initialActions": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/InProgressActionInvocation"
+            }
+          },
+          "milestones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/InProgressMilestoneDefinition"
+            }
+          },
+          "cleanupActions": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/InProgressActionInvocation"
+            }
+          },
+          "abortActions": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/InProgressActionInvocation"
+            }
+          }
+        }
+      },
+      "InvokeActionRequest": {
+        "type": "object"
+      },
+      "JsonObject": {
+        "type": [
+          "null",
+          "object"
+        ]
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RequestPaymentInput": {
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "allowedPaymentMethods": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "Card",
+                "ACH",
+                "Wire",
+                "ApplePay"
+              ]
+            }
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "type": [
+                "null",
+                "object"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                },
+                "unitCost": {
+                  "unrecognizedKeywords": {
+                    "allowedCurrencies": [
+                      "USD"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "discount": {
+            "unrecognizedKeywords": {
+              "allowedCurrencies": [
+                "USD"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ActionApis"
+    },
+    {
+      "name": "CreateInvoice"
+    },
+    {
+      "name": "DetermineEligibleActions"
+    }
+  ]
+}

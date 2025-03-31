@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <PackageId>Doubloon</PackageId>
-        <Version>0.1.1-beta</Version>
+        <Version>0.2.1-beta</Version>
         <Authors>Johnathan Davis</Authors>
         <Company>HitchPin</Company>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -24,9 +24,15 @@
 
     <ItemGroup>
       <Compile Include="../Common/RegisteredCurrencyAttribute.cs" Link="Common/RegisteredCurrencyAttribute.cs" />
+      <Compile Remove="docs\**" />
     </ItemGroup>
     
     <ItemGroup>
         <None Include="docs\README.md" Pack="true" PackagePath="\"/>
+        <None Remove="docs\**" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Remove="docs\**" />
     </ItemGroup>
 </Project>

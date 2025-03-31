@@ -5,8 +5,11 @@ namespace Doubloon
     using System.Text;
     using System.Text.Json;
     using System.Text.Json.Nodes;
+    using System.Text.Json.Serialization;
     using Microsoft.IO;
+    using Serialization;
 
+    [JsonConverter(typeof(DoubloonJsonConverterFactory))]
     public readonly struct Doubloon<T> where T : ICurrency, new()
     {
         private static readonly RecyclableMemoryStreamManager manager = new RecyclableMemoryStreamManager();
@@ -137,7 +140,7 @@ namespace Doubloon
             return obj;
         }
 
-        private string ToCanonicalString()
+        internal string ToCanonicalString()
         {
             using (var ms = new MemoryStream())
             {
@@ -153,7 +156,11 @@ namespace Doubloon
             }
         }
 
-        private static Doubloon<T> FromCanonicalString(string canon)
+        internal string ToDisplay()
+        {
+            return this.currency.ToDisplayFormat(this.value);
+        }
+        internal static Doubloon<T> FromCanonicalString(string canon)
         {
             var b64 = canon;
             var bytes = Convert.FromBase64String(b64);
