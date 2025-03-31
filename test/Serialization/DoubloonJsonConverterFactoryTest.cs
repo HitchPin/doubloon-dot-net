@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Doubloon.Currencies;
 using Xunit;
-
+#nullable disable
 public class DoubloonJsonConverterFactoryTest
 {
     [Fact]
@@ -14,8 +14,8 @@ public class DoubloonJsonConverterFactoryTest
         var x = new Doubloon<USD>("10.00");
         var c = JsonSerializer.Serialize(x);
         var obj = (JsonObject)JsonNode.Parse(c)!;
-        Assert.Equal("WyIxMC4wMCIsIlVTRCJd", obj["canonical"]!.GetValue<string>());
-        Assert.Equal("$10.00", obj["display_only"]!.GetValue<string>());
+        Assert.Equal("WyIxMC4wMCIsIlVTRCJd", obj["canonical"].GetValue<string>());
+        Assert.Equal("$10.00", obj["display_only"].GetValue<string>());
     }
 
     [Fact]
@@ -43,3 +43,4 @@ public class DoubloonJsonConverterFactoryTest
             """));
     }
 }
+#nullable restore
