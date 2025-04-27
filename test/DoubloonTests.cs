@@ -195,6 +195,13 @@ public class DoubloonTests
         Assert.IsAssignableFrom<MemoryStream>(ms);
     }
     
+    [Fact]
+    public void LooksUpCurrencyByName()
+    {
+        var c = CurrencyRegistry.ByName("USD");
+        Assert.Equal(typeof(USD), c);
+    }
+    
     [UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "manager")]
     public static extern ref RecyclableMemoryStreamManager GetUnsafeField<T>(Doubloon<T> unsafeExample) where T : ICurrency, new();
 }

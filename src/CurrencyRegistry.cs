@@ -2,6 +2,8 @@ namespace Doubloon;
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Currencies;
 
 public static class CurrencyRegistry
 {
@@ -10,7 +12,8 @@ public static class CurrencyRegistry
     {
         return Instance<T>.Value;
     }
-    
+
+    public static Type ByName(string name) => types[name];
     private static class Instance<T> where T :  ICurrency, new()
     {
         static Instance()
@@ -21,5 +24,14 @@ public static class CurrencyRegistry
         }
 
         public static readonly T Value;
+    }
+
+    [ModuleInitializer]
+    public static void InitializeKnownCurrencies()
+    {
+        RegisterOrGetRegistrant<USD>();
+        RegisterOrGetRegistrant<CAD>();
+        RegisterOrGetRegistrant<CVE>();
+        RegisterOrGetRegistrant<EUR>();
     }
 }
