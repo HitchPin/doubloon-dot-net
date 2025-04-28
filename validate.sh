@@ -17,6 +17,5 @@ dotnet reportgenerator \
   -targetdir:"coveragereport" \
   -reporttypes:Html \
   -assemblyfilters:-InternalReservedAttributeContent \
-  -classfilters:-System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute,-System.Diagnostics.CodeAnalysis.MemberNotNullAttribute,-System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute,-System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute,-System.Diagnostics.CodeAnalysis.NotNullWhenAttribute,-System.Runtime.CompilerServices.CallerArgumentExpressionAttribute,-System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute,-System.Runtime.CompilerServices.RefSafetyRulesAttribute,-System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute
- \
+  -classfilters:-System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute,-System.Diagnostics.CodeAnalysis.MemberNotNullAttribute,-System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute,-System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute,-System.Diagnostics.CodeAnalysis.NotNullWhenAttribute,-System.Runtime.CompilerServices.CallerArgumentExpressionAttribute,-System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute,-System.Runtime.CompilerServices.RefSafetyRulesAttribute,-System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute \
   -license:$REPORT_GENERATOR_LICENSE

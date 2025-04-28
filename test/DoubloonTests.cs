@@ -201,6 +201,13 @@ public class DoubloonTests
         var c = CurrencyRegistry.ByName("USD");
         Assert.Equal(typeof(USD), c);
     }
+
+    [Fact]
+    public void CurrentPropertyReflectsCurrency()
+    {
+        var d = new Doubloon<EUR>();
+        Assert.IsType<EUR>(d.Currency);
+    }
     
     [UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "manager")]
     public static extern ref RecyclableMemoryStreamManager GetUnsafeField<T>(Doubloon<T> unsafeExample) where T : ICurrency, new();

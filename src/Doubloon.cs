@@ -16,6 +16,9 @@ namespace Doubloon
         
         private readonly T currency;
         private readonly decimal value;
+        public Doubloon() : this(CurrencyRegistry.RegisterOrGetRegistrant<T>(), Decimal.Zero)
+        {
+        }
         public Doubloon(decimal d) : this(CurrencyRegistry.RegisterOrGetRegistrant<T>(), CurrencyRegistry.RegisterOrGetRegistrant<T>().AsSafeDecimal(d))
         {
         }
@@ -27,6 +30,8 @@ namespace Doubloon
             this.currency = instance;
             this.value = d;
         }
+
+        public T Currency => currency;
         
         public static Doubloon<T> operator +(Doubloon<T> d1, Doubloon<T> d2)
         {
