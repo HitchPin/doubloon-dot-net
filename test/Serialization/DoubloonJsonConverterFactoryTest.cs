@@ -14,7 +14,7 @@ public class DoubloonJsonConverterFactoryTest
         var x = new Doubloon<USD>("10.00");
         var c = JsonSerializer.Serialize(x);
         var obj = (JsonObject)JsonNode.Parse(c)!;
-        Assert.Equal("WyIxMC4wMCIsIlVTRCJd", obj["canonical"].GetValue<string>());
+        Assert.Equal("WyJVU0QiLCIxMC4wMCJd", obj["canonical"].GetValue<string>());
         Assert.Equal("$10.00", obj["display_only"].GetValue<string>());
     }
 
@@ -24,7 +24,23 @@ public class DoubloonJsonConverterFactoryTest
         var x = new Doubloon<USD>("10.00");
         var c = JsonSerializer.Serialize(x);
         var d = JsonSerializer.Deserialize<Doubloon<USD>>(c);
+        Assert.Equal("USD", d.Currency.Name);
         Assert.Equal(x, d);
+    }
+
+    [Fact]
+    public void DeserializesObject()
+    {
+        var json =
+            """
+            {
+              "canonical": "WyJVU0QiLCAiMC4wMCJd",
+              "display_only": "$0.00"
+            }
+            """;
+        var dbl = JsonSerializer.Deserialize<Doubloon<USD>>(json);
+        Assert.Equal("USD", dbl.Currency.Name);
+        Assert.Equal("0.00", dbl.AsScalarString());
     }
 
     [Fact]

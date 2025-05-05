@@ -101,14 +101,14 @@ public class DoubloonTests
     {
         var d = new Doubloon<USD>("2.25");
         var c = d.ToJson();
-        Assert.Equal("WyIyLjI1IiwiVVNEIl0=", c["canonical"]!.GetValue<string>());
+        Assert.Equal("WyJVU0QiLCIyLjI1Il0=", c["canonical"]!.GetValue<string>());
         Assert.Equal("$2.25", c["display_only"]!.GetValue<string>());
     }
     
     [Fact]
     public void DeserializesCorrectDataFromJsonValue()
     {
-        var json = Doubloon<USD>.Parse("WyIyLjI1IiwiVVNEIl0=");
+        var json = Doubloon<USD>.Parse("WyJVU0QiLCIyLjI1Il0=");
         Assert.Equal(new Doubloon<USD>("2.25"), json);
     }
 
@@ -118,7 +118,7 @@ public class DoubloonTests
         var jsonStr = new Doubloon<USD>("2.25").ToJsonString();
         var node = JsonNode.Parse(jsonStr);
         Assert.Equal("$2.25", node!["display_only"]!.GetValue<string>());
-        Assert.Equal("WyIyLjI1IiwiVVNEIl0=", node!["canonical"]!.GetValue<string>());
+        Assert.Equal("WyJVU0QiLCIyLjI1Il0=", node!["canonical"]!.GetValue<string>());
     }
 
     [Fact]

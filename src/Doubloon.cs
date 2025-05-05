@@ -113,8 +113,8 @@ namespace Doubloon
             {
                 var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false});
                 writer.WriteStartArray();
-                writer.WriteStringValue(this.AsScalarString());
                 writer.WriteStringValue(this.currency.Name);
+                writer.WriteStringValue(this.AsScalarString());
                 writer.WriteEndArray();
                 writer.Flush();
                 writer.Dispose();
@@ -151,8 +151,8 @@ namespace Doubloon
             {
                 var writer = new Utf8JsonWriter(ms, new JsonWriterOptions() { Indented = false});
                 writer.WriteStartArray();
-                writer.WriteStringValue(this.AsScalarString());
                 writer.WriteStringValue(this.currency.Name);
+                writer.WriteStringValue(this.AsScalarString());
                 writer.WriteEndArray();
                 writer.Flush();
                 writer.Dispose();
@@ -174,9 +174,9 @@ namespace Doubloon
             r2.Read();
             if (r2.TokenType != JsonTokenType.StartArray) throw new JsonException("Invalid Doubloon JSON. Expected array.");
             r2.Read();
-            string value = r2.GetString();
-            r2.Read();
             string currencyName = r2.GetString();
+            r2.Read();
+            string value = r2.GetString();
             r2.Read();
             if (r2.TokenType != JsonTokenType.EndArray)
             {
