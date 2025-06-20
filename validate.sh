@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-source ./.env
+#source ./.env
 dotnet clean
 
 cd src
