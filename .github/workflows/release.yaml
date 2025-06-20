@@ -47,10 +47,8 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0.x'
-    - name: Setup env var
-      run: echo '${{ secrets.REPORT_GENERATOR }}' >> .env
     - name: Run tests
-      run: ./validate.sh
+      run:  echo '${{ secrets.REPORT_GENERATOR }}' >> .env && ./validate.sh
 
   deploy:
     if: github.event_name == 'release'
