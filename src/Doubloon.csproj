@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <PackageId>Doubloon</PackageId>
-        <Version>04.1.1</Version>
+        <Version>04.1.3</Version>
         <Authors>Johnathan Davis</Authors>
         <Company>HitchPin</Company>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -11,6 +11,7 @@
         <RepositoryUrl>https://github.com/HitchPin/doubloon-dot-net</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <WarningsAsErrors>true</WarningsAsErrors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,7 +25,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="System.Runtime" Version="4.3.1" />
-      <PackageReference Include="System.Text.Json" Version="10.0.0-preview.2.25163.2" />
+      <PackageReference Include="System.Text.Json" Version="9.0.5" />
     </ItemGroup>
 
     <ItemGroup>
