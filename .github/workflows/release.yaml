@@ -48,7 +48,7 @@ jobs:
       with:
         dotnet-version: '9.0.x'
     - name: Setup env var
-      run: echo '${{ secrets.REPORT_GENERATOR_LICENSE }}' >> .env
+      run: echo '${{ secrets.REPORT_GENERATOR }}' >> .env
     - name: Run tests
       run: ./validate.sh
 
