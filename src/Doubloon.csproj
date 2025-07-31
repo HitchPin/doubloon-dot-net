@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <PackageId>Doubloon</PackageId>
-        <Version>04.1.5</Version>
+        <Version>04.1.8</Version>
         <Authors>Johnathan Davis</Authors>
         <Company>HitchPin</Company>
         <TargetFramework>netstandard2.0</TargetFramework>

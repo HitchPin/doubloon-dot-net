@@ -106,6 +106,20 @@ public class DoubloonTests
     }
     
     [Fact]
+    public void NegatingCreatesNegativeValue()
+    {
+        var twoAndAQuarter = new Doubloon<USD>("2.25");
+        var neg = -twoAndAQuarter;
+        Assert.Equal("-2.25", neg.AsScalarString());
+        Assert.Equal(twoAndAQuarter.Currency, neg.Currency);
+
+        var neg2 = twoAndAQuarter.Negate();
+        Assert.Equal("-2.25", neg2.AsScalarString());
+        Assert.Equal(twoAndAQuarter.Currency, neg2.Currency);
+        
+    }
+
+    [Fact]
     public void DeserializesCorrectDataFromJsonValue()
     {
         var json = Doubloon<USD>.Parse("WyJVU0QiLCIyLjI1Il0=");

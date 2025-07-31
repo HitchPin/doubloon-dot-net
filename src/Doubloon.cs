@@ -32,7 +32,15 @@ namespace Doubloon
         }
 
         public T Currency => currency;
-        
+
+        public Doubloon<T> Negate()
+        {
+            return new Doubloon<T>(this.Currency, this.value * -1.0M);
+        }
+        public static Doubloon<T> operator -(Doubloon<T> d)
+        {
+            return new Doubloon<T>(d.Currency, d.value * -1.0M);
+        }
         public static Doubloon<T> operator +(Doubloon<T> d1, Doubloon<T> d2)
         {
             return new Doubloon<T>(d1.currency, d1.value + d2.value);
